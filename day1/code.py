@@ -12,12 +12,24 @@ def parse_input(inpt):
             bundle.append(int(i))
     yield bundle
 
+def bundle_sizes(bundles: list):
+    return [sum(i) for i in bundles]
+
+def top_bundles(num: int, bundles: list):
+    biggest = []
+    sizes = bundle_sizes(bundles)
+    for i in range(0, num):
+        biggest.append(sizes.pop(sizes.index(max(sizes))))
+
+    return biggest
+
 def main():
     parser = argparse.ArgumentParser(
         prog = 'code',
         description = 'Advent of Code 2022: Day 1 ')
 
     parser.add_argument('input', help='Input file with values described in the problem')
+    parser.add_argument('-n', '--number', default=1, type=int, help='Show the top N bundles')
     args = parser.parse_args()
 
     inpt = None
@@ -26,10 +38,12 @@ def main():
 
     bundles = list(parse_input(inpt.split('\n')))
 
-    bundle_sizes = [sum(i) for i in bundles]
+    top = top_bundles(args.number, bundles)
 
-    print(f'biggest bundle is #{bundle_sizes.index(max(bundle_sizes)) + 1} at {max(bundle_sizes)} calories')
-
+    print(f'Top {args.number} bundles:')
+    for b in top:
+        print(b)
+    print(f'Total: {sum(top)}')
     
 if __name__ == "__main__":
     main()
