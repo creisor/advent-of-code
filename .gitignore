@@ -1,1 +1,3 @@
-*.swp
+*.sw[po]
+**/__pycache__
+**/*.py[cod]
