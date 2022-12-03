@@ -160,9 +160,10 @@ def main():
             rounds.append(Round(player_1, player_2))
 
     for r in rounds:
-        r.play(verbose=True)
+        r.play(verbose=False)
 
-    print_rounds(rounds)
+    #print_rounds(rounds)
+    print(f'{player_2.name} score: {sum([r.player_2.score for r in rounds])}')
 
 
 if __name__ == "__main__":
