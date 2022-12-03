@@ -13,8 +13,10 @@ class Rucksack(object):
         if number == 1:
             return [self.contents[i] for i in range(0, int(len(self.contents) / 2))]
         else:
-            print(self.contents.index(self.contents[-1]))
-            return [self.contents[i] for i in range(int(len(self.contents) / 2), self.contents.index(self.contents[-1]))]
+            return [self.contents[i] for i in range(
+                int(len(self.contents) / 2),
+                int(len(self.contents))
+            )]
 
 def main():
     parser = argparse.ArgumentParser(
@@ -32,8 +34,8 @@ def main():
 
     print(rucksacks)
     r = Rucksack(rucksacks[0])
-    print( r.compartment(1))
-    print( r.compartment(2))
+    print(f'compartment 1: {r.compartment(1)}')
+    print(f'compartment 2: {r.compartment(2)}')
 
 if __name__ == "__main__":
     main()
