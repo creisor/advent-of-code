@@ -6,17 +6,9 @@ class Rucksack(object):
     def __init__(self, contents: str):
         self.contents = contents
 
-    def compartment(self, number: int):
-        if number > 2 or number == 0:
-            raise ValueError('rucksacks contain 2 compartments')
-
-        if number == 1:
-            return [self.contents[i] for i in range(0, int(len(self.contents) / 2))]
-        else:
-            return [self.contents[i] for i in range(
-                int(len(self.contents) / 2),
-                int(len(self.contents))
-            )]
+    def compartments(self):
+        return [[i for i in self.contents[:len(self.contents)//2]],
+                [i for i in self.contents[len(self.contents)//2:]]]
 
 def main():
     parser = argparse.ArgumentParser(
@@ -34,8 +26,9 @@ def main():
 
     print(rucksacks)
     r = Rucksack(rucksacks[0])
-    print(f'compartment 1: {r.compartment(1)}')
-    print(f'compartment 2: {r.compartment(2)}')
+    #print(f'compartment 1: {r.compartment(1)}')
+    #print(f'compartment 2: {r.compartment(2)}')
+    print(r.compartments())
 
 if __name__ == "__main__":
     main()
