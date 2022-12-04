@@ -20,13 +20,20 @@ class Rucksack(object):
     def uppercase(self):
         return {k:v for (k,v) in zip([i for i in string.ascii_uppercase], [i for i in range(27, 53)])}
 
+    @property
+    def common(self):
+        return set(self.compartments[0]).intersection(set(self.compartments[1]))
+
+    def common_priorities(self):
+        priorities = {**self.lowercase, **self.uppercase}
+        return [priorities[i] for i in self.common]
+
 def main():
     parser = argparse.ArgumentParser(
         prog = 'day3',
         description = 'Advent of Code 2022: Day N ')
 
     parser.add_argument('filename')
-    #parser.add_argument('-n', '--number', default=1, type=int, help='some help message about -n')
     args = parser.parse_args()
 
     rucksacks = []
@@ -34,11 +41,11 @@ def main():
         for line in f.readlines():
             rucksacks.append(line.strip())
 
-    print(rucksacks)
-    r = Rucksack(rucksacks[0])
-    print(r.compartments)
-    print(r.lowercase)
-    print(r.uppercase)
+    priorities = []
+    for r in rucksacks:
+        rucksack = Rucksack(r)
+        priorities.append(rucksack.common_priorities())
+    print(sum([i[0] for i in priorities]))
 
 if __name__ == "__main__":
     main()
