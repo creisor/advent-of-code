@@ -29,7 +29,7 @@ def main():
     priorities = []
     for r in range(0, len(rucksacks)):
         if r % 3 == 0:
-            common = set(rucksacks[r]).intersection(set(rucksacks[r+1])).intersection(set(rucksacks[r+2]))#.pop()
+            common = set(rucksacks[r]).intersection(set(rucksacks[r+1])).intersection(set(rucksacks[r+2]))
             priorities.append(common_priorities(common)[0])
     print(sum(priorities))
 
