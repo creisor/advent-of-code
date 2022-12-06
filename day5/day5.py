@@ -40,9 +40,18 @@ class Stack(object):
     def top(self):
         return self.items[0]
 
-    def move(self, num, to):
-        for i in range(0, num-1):
-            to.items.insert(0, self.__items.pop(0))
+    def remove(self, num):
+        items = []
+        for i in range(0, num):
+            items.append(self.__items.pop(0))
+        print(f'items to remove: {items}')
+        return items
+
+    def add(self, items: list):
+        crates = [i for i in self.__items if i]
+        for i in items:
+            crates.insert(0, i)
+        self.__items = crates
 
 def args_and_inputs():
     parser = argparse.ArgumentParser(
@@ -99,14 +108,12 @@ def main():
 
     print([i.items for i in stacks])
     for i in instructions:
-        print(f'move {i.num_crates} from stack {i.from_stack} to {i.to_stack}')
-        for r in range(0, i.num_crates):
-            # TODO: need to update the logic to say "put it in the first empty index"
-            print(f'take crate {stacks[i.from_stack-1].items[0]} from stack {i.from_stack} and put it in index {r-1} on stack {i.to_stack}')
-            stacks[i.to_stack-1].items[r-1] = stacks[i.from_stack-1].items.pop(0)
+        print(f'move {i.num_crates} crates from stack {i.from_stack} to {i.to_stack}')
+        to_move = stacks[i.from_stack-1].remove(i.num_crates)
+        stacks[i.to_stack-1].add(to_move)
         print([i.items for i in stacks])
 
-    print([s.top for s in stacks])
+    print(f'\n\nanswer: {"".join([s.top for s in stacks])}')
 
 if __name__ == "__main__":
     main()
