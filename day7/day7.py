@@ -3,7 +3,7 @@
 import argparse
 import re
 
-VERBOSE = False
+VERBOSE = True
 
 class File(object):
     def __init__(self, listing: str):
@@ -23,16 +23,25 @@ class Directory(object):
         self.parent = parent
         self.children = []
 
-    def pwd(self):
-        return self.name
+    @property
+    def id(self):
+        if not self.parent:
+            id = 'root'
+        else:
+            id = f'{self.name}-{self.parent.id}'
+
+        return id
 
     @property
     def files(self):
         return [f for f in children if isinstance(f, File)]
 
     @property
-    def directories(self):
-        return self.__directories
+    def directories(self, recursive=False):
+        dirs = [d for d in children if isinstance(f, Directory)]
+        if not recursive:
+            return dirs
+        #for directory in dirs:
 
     @property
     def size(self):
@@ -76,59 +85,60 @@ def args_and_inputs():
 def main():
     args, inputs = args_and_inputs()
 
-    filesystem = {}
+    #re_cd = re.compile(r'^\$ cd (?P<dirname>.+)')
+    #re_dir = re.compile(r'^dir (?P<dirname>.+)')
+    #re_file = re.compile(r'^(?P<size>\d+) (?P<filename>.+)')
 
-    re_cd = re.compile(r'^\$ cd (?P<dirname>.+)')
-    re_dir = re.compile(r'^dir (?P<dirname>.+)')
-    re_file = re.compile(r'^(?P<size>\d+) (?P<filename>.+)')
+    root = Directory('/')
+
+    all_dirs = [root]
 
     cur_dir = None
-    prev_dir = None
+    prev_dir = all_dirs[[i.id for i in all_dirs].index('root')]
+
     for line in inputs:
-        #print(line)
-        # is it a directory?
-        m = re_cd.search(line)
-        if m:
-            new_prev_dir = cur_dir
-            if m['dirname'] == '..':
-                cur_dir = prev_dir
+        if line.startswith('$'):
+            cmd = Command(line)
+
+            if cmd.cmd == 'cd':
+                if VERBOSE:
+                    print(f'cmd: {cmd.cmd}, args: {cmd.args}')
+                dirname = cmd.args[0]
+
+                if dirname != '..':
+                    try:
+                        directory = all_dirs[[i.id for i in all_dirs].index(dirname)]
+                    except ValueError:
+                        print(f'creating new directory: {dirname}')
+                        directory = Directory(dirname, prev_dir)
+                        all_dirs.append(directory)
+
+                new_prev_dir = cur_dir
+                if dirname == '..':
+                    print(f'setting cur_dir to {prev_dir.id}')
+                    cur_dir = prev_dir
+                else:
+                    #if dirname == 'a':
+                    #    import pdb; pdb.set_trace()
+                    print(f'setting cur_dir to {directory.id}')
+                    cur_dir = directory
+
+                if new_prev_dir:
+                    print(f'setting prev_dir to {new_prev_dir.id}')
+                else:
+                    print(f'setting prev_dir to None')
                 prev_dir = new_prev_dir
-            else:
-                prev_dir = cur_dir
-                cur_dir = m['dirname']
-            if cur_dir not in filesystem:
-                filesystem[cur_dir] = []
-            print(f'cur_dir: {cur_dir}')
-            print(f'prev_dir: {prev_dir}')
 
-        #m = re_dir.search(line)
-        #if m:
+                if VERBOSE:
+                    print(f'cur_dir: {cur_dir.id}')
+                    if prev_dir:
+                        print(f'prev_dir: {prev_dir.id}')
+
+        elif line.startswith('dir'):
+            dirname = line.split()[-1]
 
 
-"""
-- / (dir)
-  - a (dir)
-    - e (dir)
-      - i (file, size=584)
-    - f (file, size=29116)
-    - g (file, size=2557)
-    - h.lst (file, size=62596)
-  - b.txt (file, size=14848514)
-  - c.dat (file, size=8504156)
-  - d (dir)
-    - j (file, size=4060174)
-    - d.log (file, size=8033020)
-    - d.ext (file, size=5626152)
-    - k (file, size=7214296)
-"""
 
-
-    ##re_file = re.compile(r'^(?P<size>\d+) (?P<filename>.+)')
-    ##re_file = re.compile(r'^\d+')
-
-    #directories = {} 
-
-    #cwd = None
     #for line in inputs:
     #    if line.startswith('$'):
     #        cmd = Command(line)
