@@ -11,7 +11,7 @@ import re
 def args_and_inputs():
     parser = argparse.ArgumentParser(
         prog = 'skeleton',
-        description = 'Advent of Code 2023: Day N ')
+        description = 'Advent of Code 2023: Day 1')
 
     parser.add_argument('filename', help='The inputs file to process')
     parser.add_argument('-d', '--debug', action=argparse.BooleanOptionalAction, default=False, type=bool, help='enable debug output')
@@ -30,7 +30,7 @@ def args_and_inputs():
     return args, inputs
 
 def first_last_num(string):
-    logging.debug(f'string; {string}')
+    logging.debug(f'string: {string}')
     regex = re.compile(r'(one)|1|(two)|2|(three)|3|(four)|4|(five)|5|(six)|6|(seven)|7|(eight)|8|(nine)|9')
     num_map = {
         'one': '1',
